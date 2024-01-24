@@ -40,7 +40,6 @@ import { useUser } from "./UserContext"
                 email,
                 password,
         
-        
               });
                 navigate("/home");
               }

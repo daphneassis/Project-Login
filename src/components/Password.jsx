@@ -7,36 +7,28 @@ const Password = () => {
   const [oldPass, setOldPass] = useState("");
   const [newPass, setNewPass] = useState("");
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(""); 
   const { user } = useUser();
   const navigate = useNavigate();
 
   const handleConfirmation = () => {
     setShowConfirmation(true);
+    setSuccessMessage(""); 
   };
 
   const handleCancel = () => {
     setShowConfirmation(false);
   };
 
-  const username = localStorage.getItem("userName");
-  console.log("UserName:", username);
-
   const savePassword = async (event) => {
     event.preventDefault();
     try {
-      const username = localStorage.getItem("userName");
       const response = await axios.put("http://localhost:8080/api/user/changepass", {
         oldPass: oldPass,
         newPass: newPass,
-        username: username,
         email: user.email,
         username: user.username
-      },       {
-        auth: {
-          username: user.username,
-          password: user.password,
-        },
-      }
+      },      
         );
 
       console.log(response.data);
@@ -44,7 +36,9 @@ const Password = () => {
       if (response.data.message === "Erro na atualização de senha") {
         alert("Senha não encontrada");
       } else if (response.data.message === "Sucesso: nova senha cadastrada!") {
+        setSuccessMessage(response.data.message); 
         setShowConfirmation(true);
+     
       }
     } catch (error) {
       console.error(error);
@@ -110,12 +104,17 @@ const Password = () => {
                   Cancelar
                 </button>
               </div>
-              </div>
-            )}
-          </div>
+              {successMessage && (
+                <div className="alert alert-success" role="alert">
+                  {successMessage}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
+  </div>
   );
 };
 
