@@ -1,13 +1,15 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "./UserContext"
 
 
-
-export const Login = () => {
-    const [email, setEmail] = useState("");
+    const Login = () => {
+    const [email, setEmail] = useState("")
     const [password, setPassword] = useState("");
+    const { updateUser } = useUser();
     const navigate = useNavigate();
+
     async function login(event) {
         event.preventDefault();
         if (!email || !password) {
@@ -29,8 +31,17 @@ export const Login = () => {
              else if(res.data.message == "Sucesso no Login")
              { 
             
-                const userRole = localStorage.getItem("userRole");
-                console.log("UserRole:", userRole);
+              const userRole = localStorage.getItem("userRole");
+              const userName = localStorage.getItem("userName");
+              console.log("UserRole:", userRole);
+              console.log("Username:", userName);
+              
+              updateUser({
+                email,
+                password,
+        
+        
+              });
                 navigate("/home");
               }
                 
@@ -91,3 +102,4 @@ export const Login = () => {
    
   )
 }
+export default Login; 

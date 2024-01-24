@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "./UserContext";
 
-export const Register = () => {
+
+ const Register = () => {
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cpf, setCpf] = useState("");
   const [role, setRole] = useState("");
+  const { updateUser } = useUser();
   const navigate = useNavigate();
-
+ 
   async function save(event) {
     event.preventDefault();
 
@@ -37,6 +40,14 @@ export const Register = () => {
       if (data.status) {
         alert("Cadastro realizado com sucesso!");
         localStorage.setItem("userRole", role);
+        localStorage.setItem("userName", username);
+        updateUser({
+          username,
+          email,
+          password,
+          cpf,
+          role,
+        });        
         navigate("/login");
       } else {
         alert(data.message);
@@ -131,3 +142,4 @@ export const Register = () => {
 
   )
 }
+export default Register; 

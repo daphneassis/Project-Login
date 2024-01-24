@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom'; 
+import { useUser } from "./UserContext";
 
-export const Home = () => {
+ const Home = () => {
   const [userList, setUserList] = useState([]);
   const [error, setError] = useState(null);
   const [showButton, setShowButton] = useState(false);
+  const { user } = useUser();
+
+  const userName = localStorage.getItem("userName");
+  console.log("userName:", userName);
+
 
   useEffect(() => {
     const userRole = localStorage.getItem("userRole");
@@ -13,6 +19,13 @@ export const Home = () => {
       setShowButton(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (user.role === "ADMIN") {
+      setShowButton(true);
+    }
+  }, [user.role]);
+
 
   const handleDeleteUser = async (userId) => {
     try {
@@ -29,6 +42,7 @@ export const Home = () => {
         } catch (error) {
           console.error(`Erro ao deletar usuário: ${error.message}`);
         
+
           alert("Erro ao deletar usuário. Por favor, tente novamente.");
         }
       };
@@ -80,3 +94,4 @@ export const Home = () => {
     </div>
   )
 }
+export default Home;

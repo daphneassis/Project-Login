@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "./UserContext";
 
-export const Password = () => {
+const Password = () => {
   const [oldPass, setOldPass] = useState("");
   const [newPass, setNewPass] = useState("");
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const { user } = useUser();
   const navigate = useNavigate();
 
   const handleConfirmation = () => {
@@ -16,13 +18,26 @@ export const Password = () => {
     setShowConfirmation(false);
   };
 
+  const username = localStorage.getItem("userName");
+  console.log("UserName:", username);
+
   const savePassword = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/api/user/changepass", {
+      const username = localStorage.getItem("userName");
+      const response = await axios.put("http://localhost:8080/api/user/changepass", {
         oldPass: oldPass,
         newPass: newPass,
-      });
+        username: username,
+        email: user.email,
+        username: user.username
+      },       {
+        auth: {
+          username: user.username,
+          password: user.password,
+        },
+      }
+        );
 
       console.log(response.data);
 
@@ -74,21 +89,27 @@ export const Password = () => {
                     }}
                   />
                 </div>
+                <div className="d-flex justify-content-between">
                 <button type="button" className="btn btn-primary" onClick={handleConfirmation}>
                   Atualizar
                 </button>
+                </div>
               </form>
             ) : (
               <div>
                 <h3>Confirme os Dados:</h3>
                 <p>Senha Atual: {oldPass}</p>
                 <p>Nova Senha: {newPass}</p>
-                <button type="button" className="btn btn-success" onClick={savePassword}>
-                  Confirmar
-                </button>
+                <div className="d-flex justify-content-between">
+                <form onSubmit={savePassword}>
+                  <button type="submit" className="btn btn-success">
+                    Confirmar
+                  </button>
+                </form>
                 <button type="button" className="btn btn-danger" onClick={handleCancel}>
                   Cancelar
                 </button>
+              </div>
               </div>
             )}
           </div>
@@ -97,3 +118,5 @@ export const Password = () => {
     </div>
   );
 };
+
+export default Password;
