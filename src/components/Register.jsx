@@ -36,6 +36,7 @@ export const Register = () => {
   
       if (data.status) {
         alert("Cadastro realizado com sucesso!");
+        localStorage.setItem("userRole", role);
         navigate("/login");
       } else {
         alert(data.message);

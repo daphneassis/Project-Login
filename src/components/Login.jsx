@@ -28,9 +28,12 @@ export const Login = () => {
              } 
              else if(res.data.message == "Sucesso no Login")
              { 
+            
+                const userRole = localStorage.getItem("userRole");
+                console.log("UserRole:", userRole);
+                navigate("/home");
+              }
                 
-                navigate('/home');
-             } 
               else 
              { 
                 alert("Email e senha não correspondem");
