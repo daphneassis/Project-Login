@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom'; 
 
 export const Home = () => {
   const [userList, setUserList] = useState([]);
@@ -15,14 +16,23 @@ export const Home = () => {
 
   const handleDeleteUser = async (userId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/user/delete/${userId}`);
-            const updatedUserList = userList.filter((user) => user.userId !== userId);
-      setUserList(updatedUserList);
+      const response = await axios.delete(`http://localhost:8080/api/user/delete/${userId}`);
+      if (response.data.message) {
+        alert(response.data.message);
+        const updatedUserList = userList.filter((user) => user.userId !== userId);
+        setUserList(updatedUserList);
             console.log(`Usuário com ID ${userId} deletado com sucesso.`);
-    } catch (error) {
-      console.error(`Erro ao deletar usuário: ${error.message}`);
-    }
-  };
+            alert("Sucesso ao deletar o usuário!")
+          } else {
+            console.error("Erro ao deletar usuário.");
+          }
+        } catch (error) {
+          console.error(`Erro ao deletar usuário: ${error.message}`);
+        
+          alert("Erro ao deletar usuário. Por favor, tente novamente.");
+        }
+      };
+    
 
   const handleListUsers = async () => {
     try {
@@ -38,13 +48,21 @@ export const Home = () => {
   return (
     <div>
       <h1>Hola Mundo</h1>
+      <div style={{ marginBottom: '10px' }}>
       {showButton && <button onClick={handleListUsers}>Listar Usuários</button>}
+    </div>
+    <div>
+      <Link to="/password">
+        <button>Trocar a minha Senha</button>
+      </Link>
+    </div>
 
       {error && <p>{error}</p>}
 
       {userList.length > 0 && (
         <div>
           <h2>Lista de Usuários</h2>
+
           <ul>
       {userList.map((user) => (
         <li key={user.userId}>
